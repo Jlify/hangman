@@ -6,6 +6,7 @@ const wordToGuessFiltered = wordToGuessArray.reduce((acc, n) => {
     return acc;
 }, []);
 const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
+let incorrectGuessedLetters = [];
 
 let correctGuessedLetters = [];
 let trials = 6;
@@ -18,14 +19,28 @@ const displayGuess = document.getElementById("displayCorrectGuess");
 displayGuess.textContent = displayArray.join(" ");
 
 for (const letter of alphabets) {
-    const createButton = document.createElement("button")
-    
-    createButton.innerHTML = letter
-    document.getElementById("alphabet-buttons").appendChild(createButton)
+    const createButton = document.createElement("button");
+    createButton.innerHTML = letter;
+    createButton.addEventListener("click", (e) => {
+        const pressedKey = e.target.textContent;
+        validateKeyPressed(pressedKey);
+    });
+    document.getElementById("alphabet-buttons").appendChild(createButton);
 }
 
 document.body.addEventListener("keydown", (event) => {
     const pressedKey = event.key.toLowerCase();
+    validateKeyPressed(pressedKey);
+});
+
+function validateKeyPressed(pressedKey) {
+    if (incorrectGuessedLetters.includes(pressedKey)) {
+        return;
+    }
+    if (correctGuessedLetters.includes(pressedKey)) {
+        return;
+    }
+
     if (alphabets.includes(pressedKey)) {
         //endgame when trials runout
         if (trials < 1) {
@@ -42,6 +57,7 @@ document.body.addEventListener("keydown", (event) => {
             displayGuess.textContent = displayArray.join(" ");
         } else {
             trials--;
+            incorrectGuessedLetters.push(pressedKey);
             feedbackElement.innerHTML = "Wrong guess " + pressedKey;
             let updateImage = document.getElementById("image");
             updateImage.setAttribute(
@@ -57,7 +73,6 @@ document.body.addEventListener("keydown", (event) => {
         if (trials < 1) {
             feedbackElement.innerHTML = "You lost " + wordToGuess;
         }
-    } else {
-        return;
     }
-});
+}
+validateKeyPressed();
