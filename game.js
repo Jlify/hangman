@@ -14,7 +14,7 @@ const wordToGuessFiltered = wordToGuessArray.reduce((acc, n) => {
     if (/[a-z]$/.test(n) && !acc.includes(n)) acc.push(n);
     return acc;
 }, []);
-const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
+const alphabets = "abcdefghijklmnopqrstuvwxyzäöüß".split("");
 let incorrectGuessedLetters = [];
 let correctGuessedLetters = [];
 let trials = 6;
