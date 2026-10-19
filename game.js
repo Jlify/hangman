@@ -1,6 +1,16 @@
-const wordToGuess = "world";
+async function getRandomWords() {
+    const response = await fetch(
+        "https://random-words-api.kushcreates.com/api?words=1",
+    );
+    const words = await response.json();
+    return words[0].word;
+}
+//getRandomWords();
+
+const wordToGuess = (await getRandomWords());
+
 // split provided string and store save as an array in created variable
-const wordToGuessArray = wordToGuess.split("");
+const wordToGuessArray = await wordToGuess.split("");
 const wordToGuessFiltered = wordToGuessArray.reduce((acc, n) => {
     if (/[a-z]$/.test(n) && !acc.includes(n)) acc.push(n);
     return acc;
@@ -10,6 +20,8 @@ let incorrectGuessedLetters = [];
 
 let correctGuessedLetters = [];
 let trials = 6;
+
+
 const feedbackElement = document.getElementById("feedback");
 
 let displayArray = wordToGuess.split("").map((v) => {
