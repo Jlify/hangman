@@ -17,7 +17,7 @@ const wordToGuessFiltered = wordToGuessArray.reduce((acc, n) => {
 const alphabets = "abcdefghijklmnopqrstuvwxyzäöüß".split("");
 let incorrectGuessedLetters = [];
 let correctGuessedLetters = [];
-let trials = 6;
+let trials = 7;
 
 const feedbackElement = document.getElementById("feedback");
 const hangManImage = document.getElementById("image");
@@ -81,4 +81,4 @@ function validateKeyPressed(pressedKey) {
         feedbackElement.innerHTML = "You lost, Correct word is " + wordToGuess;
     }
 }
-validateKeyPressed(pressedKey);
+validateKeyPressed();
