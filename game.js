@@ -1,24 +1,49 @@
-async function getRandomWords() {
-    const response = await fetch(
-        "https://random-words-api.kushcreates.com/api?language=de&words=1",
-    );
-    const words = await response.json();
-    return words[0].word;
-}
-
-const wordToGuess = await getRandomWords();
-
-// split provided string and store save as an array in created variable
-const wordToGuessArray = wordToGuess.toLowerCase().split("");
-const wordToGuessFiltered = wordToGuessArray.reduce((acc, n) => {
-    if (/[a-z]$/.test(n) && !acc.includes(n)) acc.push(n);
-    return acc;
-}, []);
-const alphabets = "abcdefghijklmnopqrstuvwxyzäöüß".split("");
+const languageDropDown = document.getElementById("dropdown");
+languageDropDown.addEventListener("change", () => updateLanguage());
+let language;
+let wordToGuess;
 let incorrectGuessedLetters = [];
 let correctGuessedLetters = [];
 let trials = 7;
+let wordToGuessArray = []
+let wordToGuessFiltered = []
 
+
+async function updateLanguage() {
+    language = languageDropDown.value;
+    startGame()
+}
+
+async function getRandomWords() {
+    const response = await fetch(
+        "https://random-words-api.kushcreates.com/api?language=" +
+            language +
+            "&words=1",
+    );
+    const words = await response.json();
+    console.log(words[0].word);
+    return words[0].word;
+}
+
+async function startGame() {
+    language = "de";
+
+    wordToGuess = await getRandomWords();
+    //split provided string and store save as an array in created variable
+    wordToGuessArray = wordToGuess.toLowerCase().split("");
+    wordToGuessFiltered = wordToGuessArray.reduce((acc, n) => {
+        if (/[a-z]$/.test(n) && !acc.includes(n)) acc.push(n);
+        return acc;
+    }, []);
+    let displayArray = wordToGuess.split("").map((v) => {
+        return "_";
+    });
+    const displayGuess = document.getElementById("displayCorrectGuess");
+    displayGuess.textContent = displayArray.join(" ");
+}
+startGame()
+
+const alphabets = "abcdefghijklmnopqrstuvwxyzäöüß".split("");
 const feedbackElement = document.getElementById("feedback");
 const hangManImage = document.getElementById("image");
 const guessedLetter = document.getElementById("PressedKeys");
@@ -27,13 +52,6 @@ const restartGame = document.getElementById("restart");
 restartGame.addEventListener("click", () => {
     window.location.reload();
 });
-
-let displayArray = wordToGuess.split("").map((v) => {
-    return "_";
-});
-
-const displayGuess = document.getElementById("displayCorrectGuess");
-displayGuess.textContent = displayArray.join(" ");
 
 for (const letter of alphabets) {
     const createButton = document.createElement("button");
@@ -73,7 +91,7 @@ function validateKeyPressed(pressedKey) {
         "hangman_images/hangman-" + trials + ".svg",
     );
 
-    if (correctGuessedLetters.length === wordToGuessFiltered.length) {
+    if (wordToGuess != undefined && correctGuessedLetters.length === wordToGuessFiltered.length) {
         feedbackElement.innerHTML = "You won";
         return;
     }
